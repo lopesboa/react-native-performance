@@ -20,10 +20,20 @@ class PerformanceMarker(context: Context?) : View(context) {
     var renderPassName: String? by PerformanceMarkerProp()
     var interactive: Interactive? by PerformanceMarkerProp()
     var componentInstanceId: String? by PerformanceMarkerProp()
+    var reportOnDraw: Boolean? by PerformanceMarkerProp()
 
     init {
-        setWillNotDraw(true)
+        this.isEnabled = false;
     }
+
+    override fun onAttachedToWindow() {
+        super.onAttachedToWindow()
+
+        if (this.reportOnDraw == true) {
+            sendRenderCompletionEventIfNeeded()
+        }
+    }
+
 
     private var reportedOnce = false
 
@@ -47,8 +57,9 @@ class PerformanceMarker(context: Context?) : View(context) {
         val _renderPassName = this.renderPassName
         val _interactive = this.interactive
         val _componentInstanceId = this.componentInstanceId
+        val _reportOnDraw = this.reportOnDraw
 
-        if (_destinationScreen == null || _renderPassName == null || _interactive == null || _componentInstanceId == null) {
+        if (_destinationScreen == null || _renderPassName == null || _interactive == null || _componentInstanceId == null || _reportOnDraw == null) {
             return
         }
 
@@ -91,7 +102,10 @@ class PerformanceMarker(context: Context?) : View(context) {
             }
 
             field = value
-            thisRef.sendRenderCompletionEventIfNeeded()
+            if (thisRef.reportOnDraw == false) {
+                thisRef.sendRenderCompletionEventIfNeeded()
+            }
+
         }
     }
 }
@@ -119,6 +133,11 @@ class PerformanceMarkerManager : SimpleViewManager<PerformanceMarker>() {
     @ReactProp(name = "componentInstanceId")
     fun setComponentInstanceId(view: PerformanceMarker, componentInstanceId: String) {
         view.componentInstanceId = componentInstanceId
+    }
+
+    @ReactProp(name = "reportOnDraw")
+    fun setReportOnDraw(view: PerformanceMarker, reportOnDraw: Boolean) {
+        view.reportOnDraw = reportOnDraw
     }
 
     override fun getExportedCustomDirectEventTypeConstants(): MutableMap<String, Any> {

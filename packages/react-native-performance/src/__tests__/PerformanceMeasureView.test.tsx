@@ -75,7 +75,7 @@ describe('PerformanceMeasureView', () => {
     expect(view.props).toStrictEqual(props);
   });
 
-  it('renders measure view with invisible style', () => {
+  it('renders measure view has a size > 0', () => {
     const screen = render(
       <Wrapper>
         <PerformanceMeasureView screenName="SomeScreen">
@@ -86,8 +86,8 @@ describe('PerformanceMeasureView', () => {
     const view = screen.UNSAFE_getByType(PerformanceMarker);
     expect(view.props.style).toStrictEqual(
       expect.objectContaining({
-        width: 0,
-        height: 0,
+        width: 1,
+        height: 1,
       }),
     );
   });

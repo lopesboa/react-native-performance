@@ -20,6 +20,7 @@ export interface PerformanceMarkerProps {
   componentInstanceId: string;
   renderPassName: string;
   interactive: Interactive;
+  reportOnDraw: boolean;
   destinationScreen: string;
   style: ViewStyle;
   onRenderComplete: OnRenderCompletionEventHandler;
